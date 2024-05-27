@@ -1,0 +1,298 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Products List</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Roboto" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <style>
+      body {
+        color: #566787;
+        background: #f5f5f5;
+        font-family: "Roboto", sans-serif;
+      }
+      .card {
+        margin: 10px 0;
+      }
+      .card-img-top {
+        max-height: 200px;
+        object-fit: cover;
+      }
+      .modal-body {
+        max-height: 500px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-xl">
+      <div class="container">
+        <button
+          class="btn btn-success"
+          data-toggle="modal"
+          data-target="#addProductModal">
+          Add Product
+        </button>
+        <!-- Add Product Modal -->
+        <div
+          class="modal fade"
+          id="addProductModal"
+          tabindex="-1"
+          aria-labelledby="addProductModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="addProductModalLabel">
+                  Add Product
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="addProductForm" action="/products" method="POST">
+                  <div class="form-group">
+                    <label for="prod_name">Product Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="prod_name"
+                      name="prod_name"
+                      required />
+                  </div>
+                  <div class="form-group">
+                    <label for="prod_desc">Product Description</label>
+                    <textarea
+                      class="form-control"
+                      id="prod_desc"
+                      name="prod_desc"
+                      rows="3"
+                      required></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="prod_price">Product Price</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="prod_price"
+                      name="prod_price"
+                      required />
+                  </div>
+                  <div class="form-group">
+                    <label for="prod_image_url">Product Image URL</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="prod_image_url"
+                      name="prod_image_url"
+                      required />
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    Add Product
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Search Product -->
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control mb-3"
+          placeholder="Search Product by Name" />
+        <% products.forEach((product, index) => { %> <% if (index % 3 === 0) {
+        %>
+        <div class="row">
+          <% } %>
+          <div class="col-md-4">
+            <div class="card">
+              <img
+                src="<%= product.prod_image_url %>"
+                class="card-img-top"
+                alt="<%= product.prod_name %>" />
+              <div class="card-body">
+                <h5 class="card-title"><%= product.prod_name %></h5>
+                <p class="card-text"><%= product.prod_desc %></p>
+                <p class="card-text">
+                  <strong>Price:</strong> Rp <%= product.prod_price %>,-
+                </p>
+                <!-- Button View Variants -->
+                <button
+                  class="btn btn-primary view-variants"
+                  data-product-id="<%= product.id %>">
+                  View Variants
+                </button>
+                <!-- Button Edit -->
+                <button
+                  class="btn btn-warning edit-button"
+                  data-product-id="<%= product.id %>">
+                  Edit
+                </button>
+                <!-- Button Delete -->
+                <form
+                  action="/products/<%= product.id %>?_method=DELETE"
+                  method="POST"
+                  style="display: inline">
+                  <button type="submit" class="btn btn-sm btn-danger">
+                    Delete
+                  </button>
+                </form>
+                <!-- Form Edit -->
+                <form id="editForm<%= product.id %>" style="display: none">
+                  <div class="form-group">
+                    <label for="prod_name">Product Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="prod_name"
+                      name="prod_name"
+                      value="<%= product.prod_name %>" />
+                  </div>
+                  <div class="form-group">
+                    <label for="prod_desc">Product Description</label>
+                    <textarea
+                      class="form-control"
+                      id="prod_desc"
+                      name="prod_desc"
+                      rows="3">
+<%= product.prod_desc %></textarea
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label for="prod_price">Product Price</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="prod_price"
+                      name="prod_price"
+                      value="<%= product.prod_price %>" />
+                  </div>
+                  <div class="form-group">
+                    <label for="prod_image_url">Product Image URL</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="prod_image_url"
+                      name="prod_image_url"
+                      value="<%= product.prod_image_url %>" />
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary update-product"
+                    data-product-id="<%= product.id %>">
+                    Update
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <% if ((index + 1) % 3 === 0 || (index + 1) === products.length) { %>
+        </div>
+        <% } %> <% }); %>
+      </div>
+
+      <!-- Modal variants -->
+      <div
+        class="modal fade"
+        id="productModal"
+        tabindex="-1"
+        aria-labelledby="productModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="productModalLabel">
+                Product Variants
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="variantContainer"></div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        $(document).ready(function () {
+          // Event listener for Button View Variants
+          $(".view-variants").click(function (event) {
+            var productId = $(this).data("product-id");
+            window.open("/products/" + productId + "/variants");
+          });
+
+          // Event listener for Button edit
+          $(".edit-button").click(function (event) {
+            var productId = $(this).data("product-id");
+            $("#editForm" + productId).toggle();
+          });
+
+          // Event listener for Button update
+          $(".update-product").click(function (event) {
+            var productId = $(this).data("product-id");
+            var formData = $("#editForm" + productId).serialize();
+            $.ajax({
+              url: "/products/" + productId,
+              method: "PUT",
+              data: formData,
+              success: function (response) {
+                console.log(response);
+                $("#editForm" + productId).hide();
+              },
+              error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+              },
+            });
+          });
+
+          // Event listener for Button Add Product
+          $("#addProductBtn").click(function () {
+            $("#addProductForm").toggle();
+          });
+
+          // Event listener for Search Product
+          $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $(".card").filter(function () {
+              $(this).toggle(
+                $(this)
+                  .find(".card-title")
+                  .text()
+                  .toLowerCase()
+                  .indexOf(value) > -1
+              );
+            });
+          });
+        });
+      </script>
+    </div>
+  </body>
+</html>
