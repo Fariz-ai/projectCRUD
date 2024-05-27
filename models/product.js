@@ -23,6 +23,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Product",
+    },
+    {
+      hooks: {
+        beforeCreate: (product) => {
+          if (product.prod_price <= 0) {
+            throw new Error("Harga produk harus lebih besar dari 0");
+          }
+        },
+      },
     }
   );
   return Product;

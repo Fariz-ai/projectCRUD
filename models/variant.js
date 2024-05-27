@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Variant.belongsTo(models.Product, {
-        foreignKey: 'prodId',
-        as: 'product'
+        foreignKey: "prodId",
+        as: "product",
       });
     }
   }
@@ -26,6 +26,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Variant",
+    },
+    {
+      hooks: {
+        beforeCreate: (variant) => {
+          if (variant.variant_price <= 0) {
+            throw new Error("Harga variant harus lebih besar dari 0");
+          }
+        },
+      },
     }
   );
   return Variant;
