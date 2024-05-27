@@ -17,7 +17,13 @@ variantController.createVariant = async (req, res) => {
     });
     res.status(201).json(variant);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.name === "SequelizeValidationError") {
+      const errors = error.errors.map((err) => err.message);
+      res.status(400).json({ message: "Validation error", errors });
+    } else {
+      console.error(error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 };
 

@@ -23,8 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Product",
-    },
-    {
       hooks: {
         beforeCreate: (product) => {
           if (product.prod_price <= 0) {

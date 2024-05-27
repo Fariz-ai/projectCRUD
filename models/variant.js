@@ -26,8 +26,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Variant",
-    },
-    {
       hooks: {
         beforeCreate: (variant) => {
           if (variant.variant_price <= 0) {

@@ -17,6 +17,17 @@ const productController = {};
     res.redirect("/products");
   } catch (error) {
     console.error(error);
+    if (
+      error.name === "SequelizeValidationError" ||
+      error.message === "Harga produk harus lebih besar dari 0"
+    ) {
+      const validationErrors = error.errors
+        ? error.errors.map((err) => err.message)
+        : [error.message];
+      return res
+        .status(400)
+        .json({ message: "Validation error", errors: validationErrors });
+    }
     res.status(500).json({ message: "Internal server error" });
   }
 }),
